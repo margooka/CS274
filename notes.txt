@@ -31,5 +31,7 @@
 -Must write quad-edge implementation and geometric algorithms by yourself
 	-fundamental non-geometric datastructures can use borrowed code
 
+TEST
+
 
 
