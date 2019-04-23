@@ -1,3 +1,5 @@
+http://www.sccg.sk/~samuelcik/dgs/quad_edge.pdf
+
 * * * GOALS: * * *
 -Implement the incremental insertion algorithm
 	(1) Use their suboptimal “walking” method for point location
@@ -31,7 +33,145 @@
 -Must write quad-edge implementation and geometric algorithms by yourself
 	-fundamental non-geometric datastructures can use borrowed code
 
-TEST
+* * * NOTES FROM PAPER * * *
+(pg 80) for oriented edge
+	can unambiguously define:
+		origin (e Org)
+		destination (e Dest)
+		left face (e Left)
+		right face (e Right)
+		same unoriented edge/flipped orientation/same direction (e Flip)
+		sane undirected edge/opposite direction/same orientation (e Sym)
+			We can picture the orientation and direction of an edge e as a small bug sitting on the surface over the midpoint of the edge and facing along it. Then the operation e Sym corresponds to the bug making a half turn on the same spot, and e Flip corresponds to the bug hanging upside down from the other side of the surface, but still at the same point of the edge and facing the same way. 
+		next counterclockwise edge with same origin (e Onext)
+		next counterclockwise edge with the same left face (e LNext)
+(pg 82) two subdivisions S and S* are dual if
+	(e Dual) Dual = e
+	(e Sym) Dual = (e Dual) Sym
+	(e Flip) Dual = (e Dual) Flip Sym
+	(e Lnext) Dual = (e Dual) Onext^(-1)
 
+(pg 83) e Rot = e Flip Dual = e Dual Flip Sym
+	NOTE (e Rot) Rot = e Sym 
+	e Rot4 = e.
+	e Rot Onext Rot Onext = e.
+	e Rot2 != e.
+	e Flip2 = e.
+	e Flip Onext Flip Onext = e.
+	e Flip Onext^n != e for any n.
+	e Flip Rot Flip Rot = e. 
+
+(pg 84) 
+	e Flip^(-1) = e Flip,
+	e Sym = e Rot^2,
+	e Rot^(-1) = e Rot^3 = e Flip Rot Flip, 
+	e Dual = e Flip Rot,
+	e Onext^(-1) = e Rot Onext Rot = e Flip Onext Flip, 
+
+	e Lnext = e Rot^(-1) Onext Rot,
+	e Rnext = e Rot Onext Rot^(-1),
+	e Dnext = e Sym Onext Sym. 
+
+	e Oprev = e Onext^(-l) = e Rot Onext Rot,
+	e Lprev = e Lnext^(-1) = e Onext Sym, 
+	e Rprev = e Rnext^(-l) = e Sym Onext,
+	e Dprev = e Dnext^(-1) = e Rot^(-l) Onext Rot^(-1). 
+
+		e Lnext Left = e Left, 
+		e Rnext Right = e Right, and 
+		e Dnext Dest = e Dest. 
+		e Rnext Dest = e Org
+
+(pg 92) Quad Edge Datastructure
+	any edge e can be written as e_0 Rot^(r) Flip^(f), where r \in {0, 1, 2, 3}, f \in {0, 1}, and e_0 is the canonical representative of the group to which e belongs. 
+
+	The group of edges containing e is represented in the data structure by one edge record e, divided into four parts e[0] through e[3].
+
+	Part e [r] corresponds to the edge e_0 Rot^(r). 
+
+	A generic edge e = e_0 Rot^(r) Flip^(f) is represented by the triplet (e,r,f), called an edge reference.
+
+	Each part e[r] of an edge record contains two fields, Data and Next. 
+
+		The Data field is used to hold geometrical and other nontopological information about the edge e_0 Rot^(r). 
+
+(pg 93)
+		The Next field of e[r] contains a reference to the edge e_0 Rot^(r) Onext. 
+
+		Given an arbitrary edge reference (e,r,f), the three basic edge functions Rot, Flip, and Onentare given by the formulas
+			(e,r,f) Rot = (e, r + 1 + 2f, f),
+			(e,r,f) Flip = (e, r, f + 1),
+			(e, r, f)Onext = (e[r + f].Next) Rot^(F) Flip^(f), 
+
+			r and f components are computed modulo 4 and modulo 2, respectively. 
+
+(pg 94) 
+	(e, r, f)Sym = (e, r + 2, f),
+	(e, r, f) Rot-’ = (e, r + 3 + 2f, f),
+	(e, r, f)Oprev = (e[r + 1 - f).Next) Rot^(1-t) Flip^(f) 
+
+(pg 95)
+	(e, r) Rot = (e, r + l),
+	(e, r)Onext = e[r].Next,
+	(e, r)Sym = (e, r + 2),
+	(e, r) Rot^(-1) = (e, r + 3),
+	(e, r) OpreV = (e[r + l).Next) Rot,
+
+(pg 96) Functions
+	e <-- MakeEdge[]
+		takes no parameters, and returns an edge e of a newly created data structure representing a subdivision of the sphere
+
+		Apart from orientation and direction, e will be the only edge of the subdivision and will not be a loop; 	
+
+		we have e Org != e Dest, e Left= e Right, e Lnext = e Rnext = e Sym, and e Onext = e Oprev = e.
+
+		To construct a loop, we may use e <-- MakeEdge[ ].Rot; then we will have 
+		e Org = eDest, eLeft != e Right, e Lnext = e Rnext = e, and e Onext = e Oprev = e Sym.
+
+	Splice[a, b]
+	 	takes as parameters two edges a and b, returning no value. 
+
+	 	This operation affects the two edge rings a Org and b Org and, independently, the two edge rings a Left and b Left. 
+
+	 	In each case,
+		(a) if the two rings are distinct, Splice will combine them into one;
+		(b) if the two are exactly the same ring, Splice will break it in two separate pieces;
+		(c) if the two are the same ring taken with opposite orientations, Splice will Flip (and reverse the order) of a segment of that ring. 
+
+		The parameters a and b determine the place where the edge rings will be cut and joined. For the rings a Org and b Org, the cuts will occur immediately after a and b (in counterclockwise order); for the rings aLeft and bLeft, the cut will occur immediately before a Rot and b Rot.
+
+
+(pg 103) 
+
+	The operation e <-- Connect[a, b] will add a new edge e connecting the destination of a to the origin of b, in such a way that a Left = e Left = b Left after the connection is complete. For added convenience it will also set the Org and Dest fields of the new edge to a.Des t and b.Org, respectively. 
+
+	PROCEDURE Connect[a, b, side] RETURNS [e]
+		e <-- MakeEdge[];
+		e.Org <-- a.Dest;
+		e.Dest <-- b.Org;
+		Splice[e, a.Lnext);
+		Splice[e.Sym, b]
+	END Connect. 
+
+	The operation Dele teEdge[e] will disconnect the edge e from the rest of the structure (this may cause the rest of the structure to fall apart in two separate components). In a sense, DeleteEdge is the inverse of Connect.
+
+	PROCEDURE DeleteEdge[e]:
+		Splice(e, e.Oprev];
+		Splice[e.Sym, e.Sym.Oprev]
+	END DeleteEdge. 
+
+	The operation Swap[e] below is used in the incremental algorithm described in Section 10. Given an edge e whose left and right faces are triangles, the problem is to delete e and connect the other two vertices of the quadrilateral thus formed 
+
+(pg 104) 
+	
+	PROCEDURE Swap[e] :
+		a <-- e.Oprev;
+		b <-- e.Sym.Oprev;
+		Splice[e, a]; Splice[e.Sym, b];
+		Splice[e, a.Lnext]; Splice[e.Sym, b.Lnext];
+		e.Org <-- a.Dest; e.Dest <-- b.Dest
+	END Swap. 
+
+	The first pair of splices disconnects e from the edge structure, and leaves it as the single edge of a separate spherical component. The last two Splices connect e again at the required position. 
 
 
