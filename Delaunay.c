@@ -4,10 +4,11 @@
 
 //https://stackoverflow.com/questions/24290273/check-if-input-file-is-a-valid-file-in-c
 int file_isreg(const char *path) {
-    struct stat st;
-    if (stat(path, &st) < 0)
-        return -1;
-    return S_ISREG(st.st_mode);
+	// struct stat st;
+	// if (stat(path, &st) < 0)
+	//     return -1;
+ //    return S_ISREG(st.st_mode);
+	return 1;
 } 
 //https://stackoverflow.com/questions/12275667/check-if-a-file-is-a-specific-type-in-c
 int endsWith (char *str, char *end) {
@@ -50,6 +51,13 @@ int main(int argc, char * argv[])
         	printf(line);
         	i++;
     	}
+    	fclose (fp);
+
+  //   	FILE *fp;
+		// fp = fopen("test.ele","w");
+		// fclose(fp);
+		// return 0;
+
 	}
    return 0;
 }
