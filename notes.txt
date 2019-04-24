@@ -174,4 +174,47 @@ http://www.sccg.sk/~samuelcik/dgs/quad_edge.pdf
 
 	The first pair of splices disconnects e from the edge structure, and leaves it as the single edge of a separate spherical component. The last two Splices connect e again at the required position. 
 
+(pg 118) INCREMENTAL ALGORITHM
 
+(pg 120)
+
+	We assume the procedure Locate e returns an edge e of the current Delaunay diagram such that the given point X is either on e or strictly inside the left face of e. 
+
+	PROCEDURE InsertSite[X]:
+		e <-- Locate[X];
+		IF X = e.Org OR X = e.Dest THEN {Ignore it:} RETURN
+		ELSIF X is on e THEN t <-- e.Oprev; DeleteEdge[e]; e <-- t FI;
+		{Connect X to vertices around it.]
+		base <-- MakeEdge[ ];
+		first <-- e.Org; base.Org <-- first; base.Dest <-- X;
+		Splice[base, e];
+		REPEAT
+			base <-- Connect[e, base.Sym]; e <-- base.Oprev
+		UNTIL e.Dest = first;
+		e <-- base.Oprev;
+		{The suspect edges (from top to bottom) are e (.Onext.Lprev)^k for k = 0, 1, . . . .}
+		{The bottom edge has .Org = first.}
+		DO
+			t <-- e.Oprev;
+			IF RightOf [t.Dest, e] AND InCircle[e.Org, t.Dest, e.Dest, X]
+			THEN Swap[e]; e <-- t
+			ELSIF e.Org = first THEN {No moresuspectedges.} RETURN
+		ELSE {Pop a suspect edge:) e <-- e.Onext.Lprev FI
+		OD
+	END InsertSite. 
+
+(pg 121)
+
+	A suitable algorithm to use for the Locate procedure is the “walking” method 
+	The idea is to start at some arbitrary place on the subdivision and then move one edge at a time in the general direction of the point X.
+
+	PROCEDURE Locate[X] RETURNS [e]:
+		e <-- some edge;
+		DO
+			IF X = e.Org OR X = e.Dest THEN RETURN e
+			ELSIF RightOf[X, e] THEN e <-- e.Sym
+			ELSIF NOT RightOf[X, e.Onext] THEN e <-- e.Onext
+			ELSIF NOT RightOf[X, e.Dprev] THEN e <-- e.Dprev
+			ELSE RETURN e FI
+		OD
+	END Locate. 
