@@ -46,10 +46,10 @@ class Vertex:
 class QuadEdge:
 	def __init__(self):
 		self.edges = [None,None,None,None] #edges
-		self.edges[0] = Edge.edge(0, self)
-		self.edges[1] = Edge.edge(1, self)
-		self.edges[2] = Edge.edge(2, self)
-		self.edges[3] = Edge.edge(3, self)
+		self.edges[0] = Edge(0, self)
+		self.edges[1] = Edge(1, self)
+		self.edges[2] = Edge(2, self)
+		self.edges[3] = Edge(3, self)
 
 		self.edges[0].next = self.edges[0]
 		self.edges[1].next = self.edges[3]
@@ -58,26 +58,35 @@ class QuadEdge:
 
 #---------------------------------
 
-filename = sys.argv[0]
+filename = sys.argv[1]
 f = open(filename, "r")
-numvertices, dim, numattributes, numBmarkers = f.read()
 
-vertices = lst[numvertices]
+vertices = f.read().split("\n")
+vertices = [[float(i) for i in v.split()] for v in vertices]
+numvertices, dim, numattributes, numBmarkers = vertices[0] 
+
+dim = int(dim)
+numvertices = int(numvertices)
+
+vertices = vertices[1:]
 for i in range(numvertices):
-	coord = f.read()
-	vertices[i] = Vertex(coord)
+	vertices[i] = Vertex(vertices[i])
 f.close()
-
 
 def MakeEdge(): #pg 96
 	v1 = vertices[0]
 	v2 = vertices[1]
 	quadedge = QuadEdge()
+	return quadedge.edges
 
-MakeEdge()
+e = MakeEdge()
 
-f = open(filename[:len(filename)-3]+".ele", "a")
-f.write()
+for v in vertices[2:]:
+	InsertSite(v)
+
+
+f = open(filename[:len(filename)-4]+".ele", "a")
+f.write("beans")
 f.close()
 
 def Splice(e1, e2): #pg 96
