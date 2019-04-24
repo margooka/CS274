@@ -11,3 +11,4 @@ quadedge initQE(quadedge *q)
 	q->edges[3].index = 3;
 }
 
+e InsertSite(vertex)
