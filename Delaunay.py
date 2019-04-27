@@ -170,7 +170,6 @@ def InsertSite(vertex):
 	Splice(base, e)
 	while (e.destination != first):  #infite loop
 		print("loop")
-		break;
 		base = Connect(e, base.Sym())
 		e = base.Oprev()
 	e = base.Oprev()
