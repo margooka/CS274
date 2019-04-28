@@ -16,12 +16,12 @@ import numpy as np
 
 class Edge:
 	def __init__(self, id_, qe):
-		self.id = id_  # int
-		self.origin = "X"  # vertex
-		self.destination = "X"  # vertex
-		self.next = "X" #edge
+		self.id = id_
+		self.origin = "X"
+		self.destination = "X"
+		self.next = "X"
 		self.data = "X"
-		self.quadedge = qe #quadedge
+		self.quadedge = qe
 
 
 	def fix_edge(self):
@@ -61,7 +61,6 @@ class Vertex:
 class QuadEdge:
 	def __init__(self):
 		self.edges = [None,None,None,None] #edges
-		self.DelaunayVertices=[None, None]
 
 		#e Lnext=e Rnext=e Sym, and e Onext=e Oprev=e 
 
@@ -74,13 +73,6 @@ class QuadEdge:
 		self.edges[1].next = self.edges[3]
 		self.edges[2].next = self.edges[2]
 		self.edges[3].next = self.edges[1]
-
-
-class Subdivision:
-	def __init__(self):
-		self.verticies = []
-		self.edges = []
-		self.faces = []
 
 # ---------------------------------
 
@@ -136,7 +128,6 @@ def Connect(e1, e2, side=None): #pg 103
 	e.origin = e1.destination
 	e.destination = e2.origin
 	e.fix_edge()
-	e.quadedge.DelaunayVertices = [e.origin, e.destination]
 	Splice(e, e1.Lnext())
 	Splice(e.Sym(), e2) 
 	return e
@@ -186,7 +177,6 @@ def InsertSite(vertex):
 	first = e.origin
 	base.origin = first
 	base.destination = vertex
-	base.quadedge.DelaunayVertices = [base.origin, base.destination]
 	Splice(base, e)
 	base.fix_edge()
 	while e.destination != first:  #infite loop
@@ -208,6 +198,22 @@ def InsertSite(vertex):
 			e = e.Onext().Lprev()
 	#OF
 
+def draw_2D(triangle_list,alpha=0.1,colour_same = 1,thickness = 1):
+    """
+    The corresponding thing for 2D drawing
+    """
+    import matplotlib.pyplot as plt
+    fig = plt.figure(figsize=(8,8))
+    for data in triangle_list:
+        order = [0,1,2,0]
+        cds = np.array([data[i] for i in order]).transpose()
+        if colour_same == 1:
+            plt.plot(cds[0],cds[1],alpha=alpha,color='black',linewidth=thickness)
+        else:
+            plt.plot(cds[0],cds[1],alpha=alpha,linewidth=thickness)
+    plt.show()
+
+    #draw_2D([[[0, 0], [1, 0], [0, 1]], [[0, 0], [1, 10], [10, 1]]], alpha=1)
 
 # filename = sys.argv[1]
 filename = "testfiles/4.node"
@@ -222,7 +228,7 @@ numvertices = int(numvertices)
 
 vertices = vertices[1:numvertices+1]
 for i in range(numvertices):
-	vertices[i] = Vertex(vertices[i], i+1)
+	vertices[i] = Vertex(vertices[i][1:], i+1)
 f.close()
 
 qedges = []
@@ -255,7 +261,6 @@ second = vertices[1]
 start = MakeEdge()
 start.origin = first
 start.destination = second
-start.quadedge.DelaunayVertices = [first, second]
 start.fix_edge()
 
 for v in vertices[2:]:
@@ -264,14 +269,15 @@ for v in vertices[2:]:
 
 f = open(filename[:len(filename)-5]+".ele", "a")
 f.truncate(0)
+#f.write("{} {} {} {}\n".format(i+1, triangle[0], triangle[1], triangle[2]))
+lst = []
 for i in range(len(qedges)):
 	e = qedges[i].edges[0]
-	A = e.origin.Node
-	b = e.Dnext().origin
-	B = e.Dnext().origin.Node
-	C = e.Dnext().Dnext().origin.Node
-	triangle = [e.origin.Node, e.Dnext().origin.Node, e.Dnext().Dnext().origin.Node]
+	triangle = [e.origin.c, e.Dnext().origin.c, e.Dnext().Dnext().origin.c]
 	f.write("{} {} {} {}\n".format(i+1, triangle[0], triangle[1], triangle[2]))
+	lst += [[triangle[0],triangle[1],triangle[2]]]
+draw_2D(lst, alpha=1,colour_same=0)
+
 f.close()
 
 
