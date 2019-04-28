@@ -47,18 +47,21 @@ class Edge:
 	def Lnext(e):
 		return e.Rot_inv().Onext().Rot()
 	def Lprev(e):
-
 		return e.Onext().Sym()
 	def Dprev(e):
 		return e.Rot_inv().Onext().Rot_inv()
+	def Dnext(e):
+		return e.Sym().Onext().Sym()
 
 class Vertex:
-	def __init__(self, coords):
+	def __init__(self, coords, node):
 		self.c = coords
+		self.Node = node
 
 class QuadEdge:
 	def __init__(self):
 		self.edges = [None,None,None,None] #edges
+		self.DelaunayVertices=[None, None]
 
 		#e Lnext=e Rnext=e Sym, and e Onext=e Oprev=e 
 
@@ -82,8 +85,8 @@ class Subdivision:
 # ---------------------------------
 
 def Splice(e1, e2): #pg 96
-	a = Edge.Rot(Edge.Onext(e1))
-	b = Edge.Rot(Edge.Onext(e2))
+	a = Edge.Rot(e1.Onext())
+	b = Edge.Rot(e2.Onext())
 
 	t1 = Edge.Onext(e2)
 	t2 = Edge.Onext(e1)
@@ -98,27 +101,11 @@ def Splice(e1, e2): #pg 96
 
 def RightOf(vertex, e):
 	#https://www.cs.cmu.edu/~quake/robust.html
-	if (vertex == "X"):
-		bean = 1
-	if (e.origin =="X"):
-		beef = 1
-	if (e.destination == "X"):
-		been = 1
 	a = np.array([[e.origin.c[0]-vertex.c[0], e.origin.c[1]-vertex.c[1]], \
 		[e.destination.c[0]-vertex.c[0], e.destination.c[1]-vertex.c[1]]])
 	return np.linalg.det(a.transpose())
 def Incircle(v1, v2, v3, v4, v5=None):
 	#https://people.eecs.berkeley.edu/~jrs/meshpapers/robnotes.pdf
-	if (v1 == "X"):
-		i = 1
-	if (v2 == "X"):
-		j = 1
-	if (v3 == "X"):
-		k = 1
-	if (v4 == "X"):
-		l = 1
-	if (v5 == "X"):
-		m = 1
 	if (v5==None):
 		a = np.array([[v1.c[0]-v4.c[0], v2.c[0]-v4.c[0], v3.c[0]-v4.c[0]], \
 			[v1.c[1]-v4.c[1], v2.c[1]-v4.c[1], v3.c[1]-v4.c[1]], \
@@ -143,10 +130,13 @@ def Connect(e1, e2, side=None): #pg 103
 	e = MakeEdge()
 
 	global qedges
-	qedges += [e.quadedge]
+	if e.quadedge not in qedges:
+		qedges += [e.quadedge]
 
 	e.origin = e1.destination
 	e.destination = e2.origin
+	e.fix_edge()
+	e.quadedge.DelaunayVertices = [e.origin, e.destination]
 	Splice(e, e1.Lnext())
 	Splice(e.Sym(), e2) 
 	return e
@@ -165,6 +155,7 @@ def Swap(e): #pg 104
 	Splice(e.Sym(), b.Lnext())
 	e.origin = a.destination
 	e.destination = b.destination
+	e.fix_edge()
 
 def Locate(vertex):
 	e = RandomEdge()
@@ -195,9 +186,10 @@ def InsertSite(vertex):
 	first = e.origin
 	base.origin = first
 	base.destination = vertex
+	base.quadedge.DelaunayVertices = [base.origin, base.destination]
 	Splice(base, e)
 	base.fix_edge()
-	while (e.destination != first):  #infite loop
+	while e.destination != first:  #infite loop
 		e.fix_edge()
 		base.fix_edge()
 		base = Connect(e, base.Sym())
@@ -205,12 +197,12 @@ def InsertSite(vertex):
 	e = base.Oprev()
 	e.fix_edge()
 	# DO
-	while (True):
+	while True:
 		t = e.Oprev()
 		if (RightOf(t.destination, e)) and Incircle(e.origin, t.destination, e.destination, vertex):
 			Swap(e)
 			e = t
-		elif (e.origin == first):
+		elif e.origin == first:
 			break;
 		else:
 			e = e.Onext().Lprev()
@@ -230,7 +222,7 @@ numvertices = int(numvertices)
 
 vertices = vertices[1:numvertices+1]
 for i in range(numvertices):
-	vertices[i] = Vertex(vertices[i])
+	vertices[i] = Vertex(vertices[i], i+1)
 f.close()
 
 qedges = []
@@ -263,15 +255,23 @@ second = vertices[1]
 start = MakeEdge()
 start.origin = first
 start.destination = second
+start.quadedge.DelaunayVertices = [first, second]
 start.fix_edge()
 
-vertices = vertices[2:]
-for v in vertices:
+for v in vertices[2:]:
 	InsertSite(v)
 
 
-f = open(filename[:len(filename)-4]+".ele", "a")
-f.write("beans")
+f = open(filename[:len(filename)-5]+".ele", "a")
+f.truncate(0)
+for i in range(len(qedges)):
+	e = qedges[i].edges[0]
+	A = e.origin.Node
+	b = e.Dnext().origin
+	B = e.Dnext().origin.Node
+	C = e.Dnext().Dnext().origin.Node
+	triangle = [e.origin.Node, e.Dnext().origin.Node, e.Dnext().Dnext().origin.Node]
+	f.write("{} {} {} {}\n".format(i+1, triangle[0], triangle[1], triangle[2]))
 f.close()
 
 
