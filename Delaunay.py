@@ -3,9 +3,9 @@
 import sys
 import numpy as np
 # import ctypes
-#import module
+# import module
 
-#https://www.geeksforgeeks.org/how-to-call-a-c-function-in-python/
+# https://www.geeksforgeeks.org/how-to-call-a-c-function-in-python/
 # pred = ctype.CDLL(pred.so)
 # pred.incircle.argtypes(ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double,)
 # pred.insphere.argtypes(ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double,)
@@ -13,39 +13,55 @@ import numpy as np
 
 # pred.exactinit()
 
+
 class Edge:
-	def __init__(self, id_, QE):
-		self.id = id_ #int
-		self.origin = "X" #vertex
-		self.destination = "X" #vertex
+	def __init__(self, id_, qe):
+		self.id = id_  # int
+		self.origin = "X"  # vertex
+		self.destination = "X"  # vertex
 		self.next = "X" #edge
 		self.data = "X"
-		self.quadedge = QE #quadedge
+		self.quadedge = qe #quadedge
+
+
+	def fix_edge(self):
+		self.Sym().origin = self.destination
+		self.Sym().destination = self.origin
+		self.next.origin = self.origin
+		self.Oprev().origin = self.origin
+		self.Lprev().destination = self.origin
 
 	def Rot(e):
-		return e.quadedge.edges[(e.id + 1) % 4]
+		return e.quadedge.edges[(e.id + 1) % 4] #pg 95
 	def Rot_inv(e):
 		return e.quadedge.edges[(e.id - 1) % 4]
 	def Sym(e):
-		return Edge.Rot(Edge.Rot(e))
+
+		return e.Rot().Rot() #return e.quadedge.edges[(e.id + 2) % 4]
 	def Onext(e):
+
 		return e.next
 	def Oprev(e):
-		return Edge.Rot(Edge.Onext(Edge.Rot(e)))
+
+		return e.Rot().Onext().Rot()
 	def Lnext(e):
-		return Edge.Rot(Edge.Onext(Edge.Rot_inv(e)))
+		return e.Rot_inv().Onext().Rot()
 	def Lprev(e):
-		return Edge.Sym(Edge.Onext(e))
+
+		return e.Onext().Sym()
 	def Dprev(e):
-		return Edge.Rot_inv(Edge.Onext(Edge.Rot_inv(e)))
+		return e.Rot_inv().Onext().Rot_inv()
 
 class Vertex:
 	def __init__(self, coords):
 		self.c = coords
 
 class QuadEdge:
-	def __init__(self, v1, v2):
+	def __init__(self):
 		self.edges = [None,None,None,None] #edges
+
+		#e Lnext=e Rnext=e Sym, and e Onext=e Oprev=e 
+
 		self.edges[0] = Edge(0, self)
 		self.edges[1] = Edge(1, self)
 		self.edges[2] = Edge(2, self)
@@ -56,20 +72,14 @@ class QuadEdge:
 		self.edges[2].next = self.edges[2]
 		self.edges[3].next = self.edges[1]
 
-		if (v1 != None):
-			self.edges[0].origin = v1
-			self.edges[0].destination = v2
 
-			self.edges[1].origin = v2
-			self.edges[1].destination = v1
+class Subdivision:
+	def __init__(self):
+		self.verticies = []
+		self.edges = []
+		self.faces = []
 
-			self.edges[2].origin = v1
-			self.edges[2].destination = v2
-
-			self.edges[1].origin = v1
-			self.edges[1].destination = v2
-
-#---------------------------------
+# ---------------------------------
 
 def Splice(e1, e2): #pg 96
 	a = Edge.Rot(Edge.Onext(e1))
@@ -88,11 +98,27 @@ def Splice(e1, e2): #pg 96
 
 def RightOf(vertex, e):
 	#https://www.cs.cmu.edu/~quake/robust.html
+	if (vertex == "X"):
+		bean = 1
+	if (e.origin =="X"):
+		beef = 1
+	if (e.destination == "X"):
+		been = 1
 	a = np.array([[e.origin.c[0]-vertex.c[0], e.origin.c[1]-vertex.c[1]], \
 		[e.destination.c[0]-vertex.c[0], e.destination.c[1]-vertex.c[1]]])
 	return np.linalg.det(a.transpose())
 def Incircle(v1, v2, v3, v4, v5=None):
 	#https://people.eecs.berkeley.edu/~jrs/meshpapers/robnotes.pdf
+	if (v1 == "X"):
+		i = 1
+	if (v2 == "X"):
+		j = 1
+	if (v3 == "X"):
+		k = 1
+	if (v4 == "X"):
+		l = 1
+	if (v5 == "X"):
+		m = 1
 	if (v5==None):
 		a = np.array([[v1.c[0]-v4.c[0], v2.c[0]-v4.c[0], v3.c[0]-v4.c[0]], \
 			[v1.c[1]-v4.c[1], v2.c[1]-v4.c[1], v3.c[1]-v4.c[1]], \
@@ -112,8 +138,9 @@ def Incircle(v1, v2, v3, v4, v5=None):
 
 def RandomEdge():
 	return qedges[0].edges[0]
+
 def Connect(e1, e2, side=None): #pg 103
-	e = MakeEdge(e1.destination, e2.origin)
+	e = MakeEdge()
 
 	global qedges
 	qedges += [e.quadedge]
@@ -145,15 +172,13 @@ def Locate(vertex):
 		return e
 	elif (RightOf(vertex, e)):
 		e = e.Sym()
-	elif ( not RightOf(vertex, e.Onext())):
+	elif (not RightOf(vertex, e.Onext())):
 		e = e.Onext()
 	elif (not RightOf(vertex, e.Dprev())):
 		e = e.Dprev()
 	return e
 
 def InsertSite(vertex):
-
-	print("into InsertSite")
 
 	e = Locate(vertex)
 
@@ -163,16 +188,17 @@ def InsertSite(vertex):
 		t = e.Oprev()
 		DeleteEdge(e)
 		e = t
-	base = MakeEdge(None, None)
+	base = MakeEdge()
 	first = e.origin
 	base.origin = first
 	base.destination = vertex
 	Splice(base, e)
+	base.fix_edge()
 	while (e.destination != first):  #infite loop
-		print("loop")
 		base = Connect(e, base.Sym())
 		e = base.Oprev()
 	e = base.Oprev()
+	e.fix_edge()
 	t = e.Oprev()
 	if (RightOf(t.destination, e)) and Incircle(e.origin, t.destination, e.destination, vertex):
 		Swap(e)
@@ -183,7 +209,8 @@ def InsertSite(vertex):
 		e = e.Onext().Lprev()
 
 
-filename = sys.argv[1]
+# filename = sys.argv[1]
+filename = "testfiles/4.node"
 f = open(filename, "r")
 
 vertices = f.read().split("\n")
@@ -193,24 +220,45 @@ numvertices, dim, numattributes, numBmarkers = vertices[0]
 dim = int(dim)
 numvertices = int(numvertices)
 
-vertices = vertices[1:]
+vertices = vertices[1:numvertices+1]
 for i in range(numvertices):
 	vertices[i] = Vertex(vertices[i])
 f.close()
 
 qedges = []
 
-def MakeEdge(v1, v2): #pg 96
-	quadedge = QuadEdge(v1, v2)
+
+def MakeEdge(): #pg 96
+	# Takes no parameters and returns an edge e of a newly creeated data structure
+	# representing a subdivision of the sphere
+
+	# Apart from orientation and direction, e will be the
+	# only edge of the subdivision and will not be a loop;
+
+	# e Org != e Dest, e Left=e Right, e Lnext=e Rnext=e Sym, and e Onext=e Oprev=e.
+
+	# To construct a loop, we may use et MakeEdge[ ].Rot; then we will have e Org=e Dest, eLeft
+	# != e Right, e Lnext = e Rnext = e, and e Onext = e Oprev = e Sym.
+
+	quadedge = QuadEdge()
 
 	global qedges
+	quadedge.edges[0]
 	qedges += [quadedge]
 
 	return quadedge.edges[0]
 
-start = MakeEdge(vertices[0], vertices[1])
 
-for v in vertices[2:]:
+first = vertices[0]
+second = vertices[1]
+
+start = MakeEdge()
+start.origin = first
+start.destination = second
+start.fix_edge()
+
+vertices = vertices[2:]
+for v in vertices:
 	InsertSite(v)
 
 
