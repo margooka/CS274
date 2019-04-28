@@ -168,15 +168,18 @@ def Swap(e): #pg 104
 
 def Locate(vertex):
 	e = RandomEdge()
-	if (vertex == e.origin or vertex == e.destination):
+	# DO
+	while (True):
+		if (vertex == e.origin or vertex == e.destination):
+			return e
+		elif (RightOf(vertex, e)):
+			e = e.Sym()
+		elif (not RightOf(vertex, e.Onext())):
+			e = e.Onext()
+		elif (not RightOf(vertex, e.Dprev())):
+			e = e.Dprev()
 		return e
-	elif (RightOf(vertex, e)):
-		e = e.Sym()
-	elif (not RightOf(vertex, e.Onext())):
-		e = e.Onext()
-	elif (not RightOf(vertex, e.Dprev())):
-		e = e.Dprev()
-	return e
+	# DO
 
 def InsertSite(vertex):
 
@@ -195,18 +198,23 @@ def InsertSite(vertex):
 	Splice(base, e)
 	base.fix_edge()
 	while (e.destination != first):  #infite loop
+		e.fix_edge()
+		base.fix_edge()
 		base = Connect(e, base.Sym())
 		e = base.Oprev()
 	e = base.Oprev()
 	e.fix_edge()
-	t = e.Oprev()
-	if (RightOf(t.destination, e)) and Incircle(e.origin, t.destination, e.destination, vertex):
-		Swap(e)
-		e = t
-	elif (e.origin == first):
-		return
-	else:
-		e = e.Onext().Lprev()
+	# DO
+	while (True):
+		t = e.Oprev()
+		if (RightOf(t.destination, e)) and Incircle(e.origin, t.destination, e.destination, vertex):
+			Swap(e)
+			e = t
+		elif (e.origin == first):
+			break;
+		else:
+			e = e.Onext().Lprev()
+	#OF
 
 
 # filename = sys.argv[1]
