@@ -24,6 +24,7 @@ class Edge:
 		self.data = "X"
 		self.quadedge = qe
 		self.seen = False
+		self.name = None
 
 
 	def fix_edge(self):
@@ -81,15 +82,15 @@ def Splice(e1, e2): #pg 96
 	a = e1.Onext().Rot()
 	b = e2.Onext().Rot()
 
-	t1 = e2.Onext()
-	t2 = e1.Onext()
-	t3 = b.Onext()
-	t4 = a.Onext()
+	c1 = e2.Onext()
+	c2 = e1.Onext()
+	c3 = b.Onext()
+	c4 = a.Onext()
 
-	e1.next = t1
-	e2.next = t2
-	a.next = t3
-	b.next = t4
+	e1.next = c1
+	e2.next = c2
+	a.next = c3
+	b.next = c4
 
 def RightOf(vertex, e):
 	#https://www.cs.cmu.edu/~quake/robust.html
@@ -116,7 +117,8 @@ def Incircle(v1, v2, v3, v4, v5=None):
 		return np.linalg.det(a.transpose())
 
 def RandomEdge():
-	return random.choice(qedges).edges[0]
+	return qedges[0].edges[0]
+	# return random.choice(qedges).edges[0] <--- I should use this one
 
 def Connect(e1, e2, side=None): #pg 103
 	ed = MakeEdge()
@@ -150,23 +152,23 @@ def Swap(e): #pg 104
 
 def Locate(vertex):
 	ed = RandomEdge()
-	# DO
+	# lst = []
 	while True:
-		print("loop")
+		# print("loop")
 		if vertex == ed.origin or vertex == ed.destination:
 			return ed
-		elif RightOf(vertex, ed) > 0:
+		elif RightOf(vertex, ed) > 0.0:
 			ed = ed.Sym()
-		elif RightOf(vertex, ed.Onext()) < 0:
+			# lst += [ed] DEBUGGING
+		elif RightOf(vertex, ed.Onext()) <= 0.0:
+			# lst += [ed] DEBUGGING
 			ed = ed.Onext()
-		elif RightOf(vertex, ed.Dprev()) < 0:
+		elif RightOf(vertex, ed.Dprev()) <= 0.0:
+			# lst += [ed] DEBUGGING
 			ed = ed.Dprev()
-		else:
-			return ed
-	# DO
+		return ed #this line is incorrect; it should be in an else block however it enters an infinite loop
 
 def InsertSite(vertex):
-
 	e = Locate(vertex)
 
 	if (vertex == e.origin) or (vertex == e.destination):
@@ -181,7 +183,7 @@ def InsertSite(vertex):
 	base.destination = vertex
 	Splice(base, e)
 	base.fix_edge()
-	while e.destination != first:  #infite loop
+	while e.destination != first:
 		e.fix_edge()
 		base.fix_edge()
 		base = Connect(e, base.Sym())
@@ -191,7 +193,7 @@ def InsertSite(vertex):
 	# DO
 	while True:
 		t = e.Oprev()
-		if (RightOf(t.destination, e) > 0) and Incircle(e.origin, t.destination, e.destination, vertex) > 0:
+		if (RightOf(t.destination, e) > 0.0) and Incircle(e.origin, t.destination, e.destination, vertex) > 0:
 			Swap(e)
 			e = t
 		elif e.origin == first:
@@ -211,7 +213,6 @@ def MakeEdge(): #pg 96
 
 	# To construct a loop, we may use et MakeEdge[ ].Rot; then we will have e Org=e Dest, eLeft
 	# != e Right, e Lnext = e Rnext = e, and e Onext = e Oprev = e Sym.
-
 	quadedge = QuadEdge()
 
 	global qedges
@@ -233,11 +234,10 @@ def draw_2D(triangle_list,alpha=0.1,colour_same = 1,thickness = 1):
         else:
             plt.plot(cds[0],cds[1],alpha=alpha,linewidth=thickness)
     plt.show()
-
     #draw_2D([[[0, 0], [1, 0], [0, 1]], [[0, 0], [1, 10], [10, 1]]], alpha=1)
 
-# filename = sys.argv[1]
-filename = "testfiles/4.node"
+filename = sys.argv[1]
+#filename = "testfiles/spiral.node"
 f = open(filename, "r")
 
 vertices = f.read().split("\n")
@@ -254,13 +254,13 @@ f.close()
 
 qedges = []
 
-
 first = vertices[0]
 second = vertices[1]
 start = MakeEdge()
 start.origin = first
 start.destination = second
 start.fix_edge()
+
 
 for v in vertices[2:]:
 	InsertSite(v)
@@ -280,7 +280,8 @@ for i in range(len(qedges)):
 		f.write("{} {} {} {}\n".format(count, triangle[0], triangle[1], triangle[2]))
 		lst += [[triangle[0], triangle[1], triangle[2]]]
 
-draw_2D(lst, alpha=1,colour_same=0)
+#draw_2D(lst, alpha=1,colour_same=0)
+draw_2D(lst, alpha=1)
 
 f.close()
 

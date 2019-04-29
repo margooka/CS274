@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="91a32e5a-eaa5-4d2b-b43c-dd9c281d1f4e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Delaunay.py" beforeDir="false" afterPath="$PROJECT_DIR$/Delaunay.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testfiles/4.ele" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/testfiles/4.node" beforeDir="false" afterPath="$PROJECT_DIR$/testfiles/4.node" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testfiles/4.ele" beforeDir="false" afterPath="$PROJECT_DIR$/testfiles/4.ele" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testfiles/ladder.ele" beforeDir="false" afterPath="$PROJECT_DIR$/testfiles/ladder.ele" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Delaunay.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="155" column="14" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="14" />
+            <state relative-caret-position="238">
+              <caret line="283" column="20" selection-start-line="283" selection-start-column="20" selection-end-line="283" selection-end-column="20" />
               <folding>
                 <element signature="e#19#29#0" expanded="true" />
               </folding>
@@ -34,8 +33,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/testfiles/4.node">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="10" selection-start-column="10" selection-end-column="10" />
+            <state relative-caret-position="28">
+              <caret line="2" column="9" lean-forward="true" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -57,7 +56,10 @@
       <find>delaun</find>
       <find>fix_</find>
       <find>right</find>
+      <find>righto</find>
       <find>rightof</find>
+      <find>fix_ed</find>
+      <find>splice</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -67,13 +69,13 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/quadedge.java" />
-        <option value="$PROJECT_DIR$/testfiles/4.node" />
         <option value="$PROJECT_DIR$/testfiles/4.ele" />
+        <option value="$PROJECT_DIR$/testfiles/4.node" />
         <option value="$PROJECT_DIR$/Delaunay.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="790" />
     <option name="width" value="1128" />
     <option name="height" value="1039" />
@@ -163,10 +165,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="632" y="0" width="902" height="831" extended-state="0" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28604382" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16369636" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -175,8 +177,8 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3257468" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.5476529" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32676056" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.47042254" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -199,18 +201,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Delaunay.py</url>
-          <line>137</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Delaunay.py</url>
-          <line>271</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Delaunay.py</url>
-          <line>153</line>
-          <option name="timeStamp" value="36" />
+          <line>264</line>
+          <option name="timeStamp" value="39" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -265,8 +257,8 @@
     <entry file="file://$PROJECT_DIR$/testfiles/633.ele" />
     <entry file="file://$PROJECT_DIR$/testfiles/4.node">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="10" selection-start-column="10" selection-end-column="10" />
+        <state relative-caret-position="28">
+          <caret line="2" column="9" lean-forward="true" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -275,8 +267,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Delaunay.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="155" column="14" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="14" />
+        <state relative-caret-position="238">
+          <caret line="283" column="20" selection-start-line="283" selection-start-column="20" selection-end-line="283" selection-end-column="20" />
           <folding>
             <element signature="e#19#29#0" expanded="true" />
           </folding>
