@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="91a32e5a-eaa5-4d2b-b43c-dd9c281d1f4e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Delaunay.py" beforeDir="false" afterPath="$PROJECT_DIR$/Delaunay.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testfiles/4.ele" beforeDir="false" afterPath="$PROJECT_DIR$/testfiles/4.ele" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/triangle/makefile" beforeDir="false" afterPath="$PROJECT_DIR$/triangle/makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testfiles/4.ele" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testfiles/4.node" beforeDir="false" afterPath="$PROJECT_DIR$/testfiles/4.node" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,8 +22,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Delaunay.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="88" column="16" lean-forward="true" selection-start-line="88" selection-start-column="16" selection-end-line="88" selection-end-column="16" />
+            <state relative-caret-position="132">
+              <caret line="155" column="14" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="14" />
               <folding>
                 <element signature="e#19#29#0" expanded="true" />
               </folding>
@@ -31,21 +32,17 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/testfiles/4.ele">
+        <entry file="file://$PROJECT_DIR$/testfiles/4.node">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14">
-              <caret line="1" column="15" lean-forward="true" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
+            <state>
+              <caret column="10" selection-start-column="10" selection-end-column="10" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/testfiles/4.node">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="28">
-              <caret line="2" column="9" lean-forward="true" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="9" />
-            </state>
-          </provider>
+        <entry file="file://$PROJECT_DIR$/testfiles/4.ele">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -58,6 +55,9 @@
       <find>make</find>
       <find>fix</find>
       <find>delaun</find>
+      <find>fix_</find>
+      <find>right</find>
+      <find>rightof</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -67,20 +67,23 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/quadedge.java" />
+        <option value="$PROJECT_DIR$/testfiles/4.node" />
+        <option value="$PROJECT_DIR$/testfiles/4.ele" />
         <option value="$PROJECT_DIR$/Delaunay.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="790" />
-    <option name="width" value="1127" />
-    <option name="height" value="1038" />
+    <option name="width" value="1128" />
+    <option name="height" value="1039" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -97,7 +100,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -161,27 +163,27 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="632" y="0" width="902" height="831" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16369636" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28604382" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32676056" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.5492958" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3257468" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.5476529" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -199,6 +201,16 @@
           <url>file://$PROJECT_DIR$/Delaunay.py</url>
           <line>137</line>
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Delaunay.py</url>
+          <line>271</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Delaunay.py</url>
+          <line>153</line>
+          <option name="timeStamp" value="36" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -238,9 +250,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/testfiles/4..ele">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/testfiles/4..ele" />
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="211">
@@ -248,24 +258,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/testfiles/box.ele" />
+    <entry file="file://$PROJECT_DIR$/testfiles/box.node">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testfiles/633.ele" />
     <entry file="file://$PROJECT_DIR$/testfiles/4.node">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="28">
-          <caret line="2" column="9" lean-forward="true" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="9" />
+        <state>
+          <caret column="10" selection-start-column="10" selection-end-column="10" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/testfiles/4.ele">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14">
-          <caret line="1" column="15" lean-forward="true" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/Delaunay.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="88" column="16" lean-forward="true" selection-start-line="88" selection-start-column="16" selection-end-line="88" selection-end-column="16" />
+        <state relative-caret-position="132">
+          <caret line="155" column="14" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="14" />
           <folding>
             <element signature="e#19#29#0" expanded="true" />
           </folding>

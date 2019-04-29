@@ -2,6 +2,7 @@
 
 import sys
 import numpy as np
+import random
 # import ctypes
 # import module
 
@@ -22,6 +23,7 @@ class Edge:
 		self.next = "X"
 		self.data = "X"
 		self.quadedge = qe
+		self.seen = False
 
 
 	def fix_edge(self):
@@ -30,19 +32,18 @@ class Edge:
 		self.next.origin = self.origin
 		self.Oprev().origin = self.origin
 		self.Lprev().destination = self.origin
+		self.Dnext().destination = self.destination
 
 	def Rot(e):
 		return e.quadedge.edges[(e.id + 1) % 4] #pg 95
 	def Rot_inv(e):
-		return e.quadedge.edges[(e.id - 1) % 4]
+		return e.quadedge.edges[(e.id + 3) % 4]
 	def Sym(e):
-
-		return e.Rot().Rot() #return e.quadedge.edges[(e.id + 2) % 4]
+		return e.Rot().Rot()
+		#return e.quadedge.edges[(e.id + 2) % 4]
 	def Onext(e):
-
 		return e.next
 	def Oprev(e):
-
 		return e.Rot().Onext().Rot()
 	def Lnext(e):
 		return e.Rot_inv().Onext().Rot()
@@ -77,19 +78,18 @@ class QuadEdge:
 # ---------------------------------
 
 def Splice(e1, e2): #pg 96
-	a = Edge.Rot(e1.Onext())
-	b = Edge.Rot(e2.Onext())
+	a = e1.Onext().Rot()
+	b = e2.Onext().Rot()
 
-	t1 = Edge.Onext(e2)
-	t2 = Edge.Onext(e1)
-	t3 = Edge.Onext(b)
-	t4 = Edge.Onext(a)
+	t1 = e2.Onext()
+	t2 = e1.Onext()
+	t3 = b.Onext()
+	t4 = a.Onext()
 
 	e1.next = t1
 	e2.next = t2
 	a.next = t3
 	b.next = t4
-	return 
 
 def RightOf(vertex, e):
 	#https://www.cs.cmu.edu/~quake/robust.html
@@ -116,26 +116,26 @@ def Incircle(v1, v2, v3, v4, v5=None):
 		return np.linalg.det(a.transpose())
 
 def RandomEdge():
-	return qedges[0].edges[0]
+	return random.choice(qedges).edges[0]
 
 def Connect(e1, e2, side=None): #pg 103
-	e = MakeEdge()
+	ed = MakeEdge()
 
 	global qedges
-	if e.quadedge not in qedges:
-		qedges += [e.quadedge]
+	if ed.quadedge not in qedges:
+		qedges += [ed.quadedge]
 
-	e.origin = e1.destination
-	e.destination = e2.origin
-	e.fix_edge()
-	Splice(e, e1.Lnext())
-	Splice(e.Sym(), e2) 
-	return e
+	ed.origin = e1.destination
+	ed.destination = e2.origin
+	ed.fix_edge()
+	Splice(ed, e1.Lnext())
+	Splice(ed.Sym(), e2)
+	return ed
 
 def DeleteEdge(e): #pg 103
 	Splice(e, e.Oprev())
 	Splice(e.Sym(), e.Sym().Oprev())
-	qedges.remove(e)
+	qedges.remove(e.quadedge)
 
 def Swap(e): #pg 104
 	a = e.Oprev()
@@ -149,18 +149,20 @@ def Swap(e): #pg 104
 	e.fix_edge()
 
 def Locate(vertex):
-	e = RandomEdge()
+	ed = RandomEdge()
 	# DO
-	while (True):
-		if (vertex == e.origin or vertex == e.destination):
-			return e
-		elif (RightOf(vertex, e)):
-			e = e.Sym()
-		elif (not RightOf(vertex, e.Onext())):
-			e = e.Onext()
-		elif (not RightOf(vertex, e.Dprev())):
-			e = e.Dprev()
-		return e
+	while True:
+		print("loop")
+		if vertex == ed.origin or vertex == ed.destination:
+			return ed
+		elif RightOf(vertex, ed) > 0:
+			ed = ed.Sym()
+		elif RightOf(vertex, ed.Onext()) < 0:
+			ed = ed.Onext()
+		elif RightOf(vertex, ed.Dprev()) < 0:
+			ed = ed.Dprev()
+		else:
+			return ed
 	# DO
 
 def InsertSite(vertex):
@@ -169,7 +171,7 @@ def InsertSite(vertex):
 
 	if (vertex == e.origin) or (vertex == e.destination):
 		return
-	elif (RightOf(vertex, e)==0): #determine if point collinear
+	elif RightOf(vertex, e) == 0.0: #determine if point collinear
 		t = e.Oprev()
 		DeleteEdge(e)
 		e = t
@@ -189,14 +191,33 @@ def InsertSite(vertex):
 	# DO
 	while True:
 		t = e.Oprev()
-		if (RightOf(t.destination, e)) and Incircle(e.origin, t.destination, e.destination, vertex):
+		if (RightOf(t.destination, e) > 0) and Incircle(e.origin, t.destination, e.destination, vertex) > 0:
 			Swap(e)
 			e = t
 		elif e.origin == first:
-			break;
+			return
 		else:
 			e = e.Onext().Lprev()
-	#OF
+	#OD
+
+def MakeEdge(): #pg 96
+	# Takes no parameters and returns an edge e of a newly creeated data structure
+	# representing a subdivision of the sphere
+
+	# Apart from orientation and direction, e will be the
+	# only edge of the subdivision and will not be a loop;
+
+	# e Org != e Dest, e Left=e Right, e Lnext=e Rnext=e Sym, and e Onext=e Oprev=e.
+
+	# To construct a loop, we may use et MakeEdge[ ].Rot; then we will have e Org=e Dest, eLeft
+	# != e Right, e Lnext = e Rnext = e, and e Onext = e Oprev = e Sym.
+
+	quadedge = QuadEdge()
+
+	global qedges
+	qedges += [quadedge]
+
+	return quadedge.edges[0]
 
 def draw_2D(triangle_list,alpha=0.1,colour_same = 1,thickness = 1):
     """
@@ -234,30 +255,8 @@ f.close()
 qedges = []
 
 
-def MakeEdge(): #pg 96
-	# Takes no parameters and returns an edge e of a newly creeated data structure
-	# representing a subdivision of the sphere
-
-	# Apart from orientation and direction, e will be the
-	# only edge of the subdivision and will not be a loop;
-
-	# e Org != e Dest, e Left=e Right, e Lnext=e Rnext=e Sym, and e Onext=e Oprev=e.
-
-	# To construct a loop, we may use et MakeEdge[ ].Rot; then we will have e Org=e Dest, eLeft
-	# != e Right, e Lnext = e Rnext = e, and e Onext = e Oprev = e Sym.
-
-	quadedge = QuadEdge()
-
-	global qedges
-	quadedge.edges[0]
-	qedges += [quadedge]
-
-	return quadedge.edges[0]
-
-
 first = vertices[0]
 second = vertices[1]
-
 start = MakeEdge()
 start.origin = first
 start.destination = second
@@ -266,16 +265,21 @@ start.fix_edge()
 for v in vertices[2:]:
 	InsertSite(v)
 
-
 f = open(filename[:len(filename)-5]+".ele", "a")
 f.truncate(0)
-#f.write("{} {} {} {}\n".format(i+1, triangle[0], triangle[1], triangle[2]))
 lst = []
+count = 0
 for i in range(len(qedges)):
 	e = qedges[i].edges[0]
-	triangle = [e.origin.c, e.Dnext().origin.c, e.Dnext().Dnext().origin.c]
-	f.write("{} {} {} {}\n".format(i+1, triangle[0], triangle[1], triangle[2]))
-	lst += [[triangle[0],triangle[1],triangle[2]]]
+	if not e.seen:
+		count = count + 1
+		e.seen = True
+		e.Lnext().seen = True
+		e.Lnext().Lnext().seen = True
+		triangle = [e.origin.c, e.Lnext().origin.c, e.Lnext().Lnext().origin.c]
+		f.write("{} {} {} {}\n".format(count, triangle[0], triangle[1], triangle[2]))
+		lst += [[triangle[0], triangle[1], triangle[2]]]
+
 draw_2D(lst, alpha=1,colour_same=0)
 
 f.close()
