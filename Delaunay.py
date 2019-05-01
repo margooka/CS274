@@ -265,8 +265,8 @@ start.fix_edge()
 for v in vertices[2:]:
 	InsertSite(v)
 
-f = open(filename[:len(filename)-5]+".ele", "a")
-f.truncate(0)
+#f = open(filename[:len(filename)-5]+".ele", "a")
+#f.truncate(0)
 lst = []
 count = 0
 for i in range(len(qedges)):
@@ -277,13 +277,13 @@ for i in range(len(qedges)):
 		e.Lnext().seen = True
 		e.Lnext().Lnext().seen = True
 		triangle = [e.origin.c, e.Lnext().origin.c, e.Lnext().Lnext().origin.c]
-		f.write("{} {} {} {}\n".format(count, triangle[0], triangle[1], triangle[2]))
+		#f.write("{} {} {} {}\n".format(count, triangle[0], triangle[1], triangle[2]))
 		lst += [[triangle[0], triangle[1], triangle[2]]]
 
 #draw_2D(lst, alpha=1,colour_same=0)
 draw_2D(lst, alpha=1)
 
-f.close()
+#f.close()
 
 
 
